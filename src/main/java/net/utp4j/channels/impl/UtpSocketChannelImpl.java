@@ -72,6 +72,7 @@ import net.utp4j.data.UtpPacketUtils;
 
 /**
  * Implements and hides implementation details from the superclass.
+ * 
  * @author Ivan Iljkic (i.iljkic@gmail.com)
  *
  */
@@ -91,17 +92,15 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 
 	private int eofPacket;
 
-
 	private static final Logger log = LoggerFactory
 			.getLogger(UtpSocketChannelImpl.class);
-	
+
 	/*
 	 * Handles packet.
 	 */
 	@Override
 	public void recievePacket(DatagramPacket udpPacket) {
-		
-		
+
 		if (isSynAckPacket(udpPacket)) {
 			handleSynAckPacket(udpPacket);
 		} else if (isResetPacket(udpPacket)) {
@@ -117,7 +116,7 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 		} else {
 			sendResetPacket(udpPacket.getSocketAddress());
 		}
-			
+
 	}
 
 	private void handleFinPacket(DatagramPacket udpPacket) {
@@ -158,17 +157,17 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 			printState("[SynAck recieved] ");
 			disableConnectionTimeOutCounter();
 			connectFuture.finished(null);
-			stateLock.unlock();			
+			stateLock.unlock();
 		} else {
 			sendResetPacket(udpPacket.getSocketAddress());
 		}
 	}
-	
+
 	private boolean isSameAddressAndId(long id, SocketAddress addr) {
-		return (id & 0xFFFFFFFF) == getConnectionIdRecieving() 
+		return (id & 0xFFFFFFFF) == getConnectionIdRecieving()
 				&& addr.equals(getRemoteAdress());
 	}
-	
+
 	private void disableConnectionTimeOutCounter() {
 		if (retryConnectionTimeScheduler != null) {
 			retryConnectionTimeScheduler.shutdown();
@@ -191,11 +190,13 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 				timeStamper.timeStamp(), timeStamper.utpTimeStamp()));
 
 	}
+
 	/**
-	 * Sends an ack. 
-	 * @param utpPacket the packet that should be acked
+	 * Sends an ack.
+	 * 
+	 * @param utpPacket           the packet that should be acked
 	 * @param timestampDifference timestamp difference for tha ack packet
-	 * @param windowSize the remaining buffer size. 
+	 * @param windowSize          the remaining buffer size.
 	 * @throws IOException
 	 */
 	public void ackPacket(UtpPacket utpPacket, int timestampDifference,
@@ -204,9 +205,9 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 				windowSize);
 		sendPacket(ackPacket);
 	}
-	
+
 	/**
-	 * setting up a random sequence number. 
+	 * setting up a random sequence number.
 	 */
 	public void setupRandomSeqNumber() {
 		Random rnd = new Random();
@@ -223,7 +224,8 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 			int timeStamp = timeStamper.utpTimeStamp();
 			setRemoteAddress(udpPacket.getSocketAddress());
 			setConnectionIdsFromPacket(utpPacket);
-			setupRandomSeqNumber();
+			// setupRandomSeqNumber();
+			setSequenceNumber(DEF_SEQ_START);
 			setAckNrFromPacketSqNr(utpPacket);
 			printState("[Syn recieved] ");
 			int timestampDifference = timeStamper.utpDifference(timeStamp,
@@ -253,10 +255,10 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 		log.debug("Sending RST packet");
 
 	}
-	
+
 	private boolean acceptSyn(DatagramPacket udpPacket) {
 		UtpPacket pkt = extractUtpPacket(udpPacket);
-		return getState() == CLOSED 
+		return getState() == CLOSED
 				|| (getState() == CONNECTED && isSameAddressAndId(
 						pkt.getConnectionId(), udpPacket.getSocketAddress()));
 	}
@@ -308,9 +310,10 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 	public BlockingQueue<UtpTimestampedPacketDTO> getDataGramQueue() {
 		return queue;
 	}
-	
+
 	/**
-	 * Returns a Data packet with specified header fields already set. 
+	 * Returns a Data packet with specified header fields already set.
+	 * 
 	 * @return
 	 */
 	public UtpPacket getNextDataPacket() {
@@ -319,6 +322,7 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 
 	/**
 	 * Returns predefined fin packet
+	 * 
 	 * @return fin packet.
 	 */
 	public UtpPacket getFinPacket() {
@@ -339,12 +343,13 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 		reader.start();
 		return readFuture;
 	}
-	
+
 	/**
 	 * Creates an Selective Ack packet
-	 * @param headerExtension the header extension where the SACK data is stored
+	 * 
+	 * @param headerExtension     the header extension where the SACK data is stored
 	 * @param timestampDifference timestamp difference for the ack pcket.
-	 * @param advertisedWindow remaining buffer size.
+	 * @param advertisedWindow    remaining buffer size.
 	 * @throws IOException
 	 */
 	public void selectiveAckPacket(SelectiveAckHeaderExtension headerExtension,
@@ -449,7 +454,7 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 
 	@Override
 	public void setAckNumber(int ackNumber) {
-//		log.debug("ack nubmer set to: " + ackNumber);
+		// log.debug("ack nubmer set to: " + ackNumber);
 		this.ackNumber = ackNumber;
 	}
 
@@ -465,20 +470,21 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 
 	public void returnFromReading() {
 		reader = null;
-		//TODO: dispatch:
+		// TODO: dispatch:
 		if (!isWriting()) {
 			this.state = UtpSocketState.CONNECTED;
 		} else {
-			
+
 		}
 	}
 
 	public void removeWriter() {
 		writer = null;
 	}
-	
+
 	/*
-	 * Start a connection time out counter which will frequently resend the syn packet.
+	 * Start a connection time out counter which will frequently resend the syn
+	 * packet.
 	 */
 	@Override
 	protected void startConnectionTimeOutCounter(UtpPacket synPacket) {
@@ -493,9 +499,10 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 				UtpAlgConfiguration.CONNECTION_ATTEMPT_INTERVALL_MILLIS,
 				TimeUnit.MILLISECONDS);
 	}
-	
+
 	/**
 	 * Called by the time out counter {@see ConnectionTimeOutRunnable}
+	 * 
 	 * @param exception, is optional.
 	 */
 	public void connectionFailed(IOException exp) {
@@ -512,7 +519,8 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 
 	/**
 	 * Resends syn packet. called by {@see ConnectionTimeOutRunnable}
-	 * @param synPacket 
+	 * 
+	 * @param synPacket
 	 */
 	public void resendSynPacket(UtpPacket synPacket) {
 		stateLock.lock();
@@ -544,14 +552,15 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 		this.timeStamper = stamp;
 
 	}
+
 	/*
-	 * Creates an ACK packet. 
+	 * Creates an ACK packet.
 	 */
 	protected UtpPacket createAckPacket(UtpPacket pkt, int timedifference,
 			long advertisedWindow) {
 		UtpPacket ackPacket = new UtpPacket();
 		if (pkt.getTypeVersion() != FIN) {
-			setAckNrFromPacketSqNr(pkt);			
+			setAckNrFromPacketSqNr(pkt);
 		}
 		ackPacket.setAckNumber(longToUshort(getAckNumber()));
 
@@ -562,7 +571,7 @@ public class UtpSocketChannelImpl extends UtpSocketChannel implements
 		ackPacket.setWindowSize(longToUint(advertisedWindow));
 		return ackPacket;
 	}
-	
+
 	protected UtpPacket createDataPacket() {
 		UtpPacket pkt = new UtpPacket();
 		pkt.setSequenceNumber(longToUshort(getSequenceNumber()));
