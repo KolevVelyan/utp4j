@@ -21,12 +21,13 @@ public class MainSend {
     public static void main(String[] args) {
         try {
             // stub data to send
-            final byte[] bulk = new byte[10 * 1024];
+            final byte[] bulk = new byte[10 * 1024 * 1024];
             Arrays.fill(bulk, (byte) 0xAF);
+            // 1752 bytes per packets
 
             // final InetSocketAddress local = new
             // InetSocketAddress(InetAddress.getAllByName("145.94.139.225")[0], 12341);
-            final InetSocketAddress local = new InetSocketAddress(InetAddress.getLocalHost(), 12341);
+            final InetSocketAddress local = new InetSocketAddress(InetAddress.getByName("145.94.188.69"), 12351);
 
             // The Server.
             try {

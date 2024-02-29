@@ -26,7 +26,7 @@ public class MainRcv {
 
             // final InetSocketAddress local = new
             // InetSocketAddress(InetAddress.getAllByName("145.94.139.225")[0], 12341);
-            final InetSocketAddress local = new InetSocketAddress(InetAddress.getLocalHost(), 12341);
+            final InetSocketAddress local = new InetSocketAddress(InetAddress.getByName("169.254.13.6"), 12351);
 
             // The Client.
             UtpSocketChannel channel = UtpSocketChannel.open();
