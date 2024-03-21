@@ -66,12 +66,12 @@ public abstract class UtpServerSocketChannel {
 	}
 
 
-	protected DatagramSocket getSocket() {
+	public DatagramSocket getSocket() {
 		return socket;
 	}
 
 
-	protected void setSocket(DatagramSocket socket) {
+	public void setSocket(DatagramSocket socket) {
 		this.socket = socket;
 	}
 	
