@@ -293,7 +293,7 @@ public abstract class UtpSocketChannel {
 	 * @param timedifference
 	 *            Between t1 and t2. t1 beeing the time the remote socket has
 	 *            sent this packet, t2 when this socket recieved the packet.
-	 *            Differences is <b>unsigned</b> and in µs resolution.
+	 *            Differences is <b>unsigned</b> and in ï¿½s resolution.
 	 * @param advertisedWindow
 	 *            How much space this socket has in its temporary recieve buffer
 	 * @return ack packet
@@ -331,6 +331,6 @@ public abstract class UtpSocketChannel {
 
 	protected abstract void setAckNumber(int ackNumber);
 
-	protected abstract void setDgSocket(DatagramSocket dgSocket);
+	public abstract void setDgSocket(DatagramSocket dgSocket);
 
 }
