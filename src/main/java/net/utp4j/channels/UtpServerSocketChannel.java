@@ -53,6 +53,18 @@ public abstract class UtpServerSocketChannel {
 	public UtpAcceptFuture accept() throws IOException {
 		return acceptImpl();		
 	}
+
+	/**
+	 * Binds the server using the {@link DatagramSocket} specified, which is already 
+	 * @param address
+	 * @throws IOException see {@link DatagramSocket} Constructor Details
+	 * 
+	 */
+	public void bind(DatagramSocket socket) {
+		setSocket(socket);
+		UtpServerSocketChannelImpl me = (UtpServerSocketChannelImpl) this;
+		me.setListenRunnable(new UtpRecieveRunnable(this.getSocket(), me));
+	}
 	
 	/**
 	 * Binds the server to an {@link DatagramSocket} and binds {@link InetSocketAddress}
