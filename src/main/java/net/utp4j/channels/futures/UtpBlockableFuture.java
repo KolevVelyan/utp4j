@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.util.concurrent.Semaphore;
 
 /**
- * Superclass to all blockable futures. 
+ * Superclass to all blockable futures.
+ * 
  * @author Ivan Iljkic (i.iljkic@gmail.com)
  *
  */
@@ -28,23 +29,25 @@ public class UtpBlockableFuture {
 	protected volatile boolean isDone;
 	protected volatile IOException exception;
 	protected volatile Semaphore semaphore = new Semaphore(1);
-	
+
 	public UtpBlockableFuture() throws InterruptedException {
 		semaphore.acquire();
 	}
+
 	/**
-	 * Returns true if this future task succeeded. 
+	 * Returns true if this future task succeeded.
 	 */
 	public boolean isSuccessfull() {
 		return exception == null;
 	}
 
 	/**
-	 * Blocks the current thread until the future task is done. 
+	 * Blocks the current thread until the future task is done.
+	 * 
 	 * @throws InterruptedException
 	 */
 	public void block() throws InterruptedException {
-		semaphore.acquire();
+		semaphore.tryAcquire(30, java.util.concurrent.TimeUnit.SECONDS);
 		semaphore.release();
 
 	}
@@ -56,7 +59,7 @@ public class UtpBlockableFuture {
 	public boolean isDone() {
 		return isDone;
 	}
-	
+
 	/**
 	 * Unblocks the calling thread.
 	 */
