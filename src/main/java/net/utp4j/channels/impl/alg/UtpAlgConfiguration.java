@@ -69,7 +69,7 @@ public class UtpAlgConfiguration {
 	 * Maximal window increase per RTT - increase to allow uTP throttle up
 	 * faster.
 	 */
-	public volatile static int MAX_CWND_INCREASE_PACKETS_PER_RTT = 3000;
+	public volatile static int MAX_CWND_INCREASE_PACKETS_PER_RTT = 30000;
 
 	/**
 	 * maximal buffering delay
