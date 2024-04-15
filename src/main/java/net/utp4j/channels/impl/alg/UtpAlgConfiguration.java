@@ -18,28 +18,27 @@ public class UtpAlgConfiguration {
 
 	public static final int MAX_CONNECTION_ATTEMPTS = 5;
 	public static final int CONNECTION_ATTEMPT_INTERVALL_MILLIS = 5000;
-	
+
 	public static long MINIMUM_DELTA_TO_MAX_WINDOW_MICROS = 1000000;
 	// ack every second packets
 	public static int SKIP_PACKETS_UNTIL_ACK = 2;
-	
 
 	/**
 	 * TWEAKING SECTION
 	 */
 
 	/**
-	 * Auto ack every packet that is smaller than ACK_NR from ack packet. 
-	 * Some Implementations like libutp do this. 
+	 * Auto ack every packet that is smaller than ACK_NR from ack packet.
+	 * Some Implementations like libutp do this.
 	 */
 	public static boolean AUTO_ACK_SMALLER_THAN_ACK_NUMBER = true;
 	/**
-	 * if oldest mindelay sample is older than that, update it. 
+	 * if oldest mindelay sample is older than that, update it.
 	 */
 	public static long MINIMUM_DIFFERENCE_TIMESTAMP_MICROSEC = 120000000L;
 
 	/**
-	 * timeout 
+	 * timeout
 	 */
 	public static int MINIMUM_TIMEOUT_MILLIS = 500;
 
@@ -53,7 +52,7 @@ public class UtpAlgConfiguration {
 	 * implemented.
 	 */
 
-	public volatile static int MAX_PACKET_SIZE = 1472;
+	public volatile static int MAX_PACKET_SIZE = 1472 - 31;
 
 	/**
 	 * minimum packet size.
@@ -96,12 +95,11 @@ public class UtpAlgConfiguration {
 	public volatile static long TIME_WAIT_AFTER_LAST_PACKET = 3000000;
 
 	public volatile static boolean ONLY_POSITIVE_GAIN = false;
-	
+
 	public volatile static boolean DEBUG = false;
-	
 
 	/**
-	 * @return information about the algorithm. This is only used for debugging 
+	 * @return information about the algorithm. This is only used for debugging
 	 */
 	public static String getString() {
 		String toReturn = "";
@@ -122,5 +120,4 @@ public class UtpAlgConfiguration {
 		return toReturn;
 	}
 
-	
 }
